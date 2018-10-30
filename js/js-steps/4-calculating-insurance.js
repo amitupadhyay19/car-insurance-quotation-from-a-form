@@ -87,8 +87,9 @@ Insurance.prototype.calculateQuotation = function(insurance) {
     // Each year the cost of the insurance is going to be 3% cheaper
     price = price - ((difference * 3) * price) / 100;
 
-    // check the level of protection
-    
+    console.log(price);
+
+    // Get the years difference
 
 }
 
