@@ -9,17 +9,17 @@ const html = new HTMLUI();
 eventListners();
 
 function eventListners() {
-    document.addEventListener('DOMContentLoaded', function () {
-
+    document.addEventListener('DOMContentLoaded', function() {
+        
         // Create the option for the years
         html.displayYears();
-
+    
     });
-
+    
     // when the form is submitted
-    form.addEventListener('submit', function (e) {
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
-
+        
         // read the values from the form
         const make = document.getElementById('make').value;
         const year = document.getElementById('year').value;
@@ -28,21 +28,15 @@ function eventListners() {
         const level = document.querySelector('input[name="level"]:checked').value;
 
         // check that all the fields have something
-        if (make === '' || year === '' || level === '') {
+        if(make === '' || year === '' || level === '') {
             html.displayError('All the fields are mandatory');
         } else {
-            // clear the previous quotes
-            const prevResult = document.querySelector('#result div');
-            if(prevResult != null) {
-                prevResult.remove();
-            }
-
             // make the quotation
             const insurance = new Insurance(make, year, level);
             const price = insurance.calculateQuotation(insurance);
 
             // print the results form HTMLUI();
-            html.showResults(price, insurance);
+            html.showResults(price);
         }
     });
 }
@@ -60,10 +54,10 @@ function Insurance(make, year, level) {
 }
 
 // calculate the price for the current quotation
-Insurance.prototype.calculateQuotation = function (insurance) {
+Insurance.prototype.calculateQuotation = function(insurance) {
     let price;
     const base = 2000;
-
+    
     // get the make
     const make = insurance.make;
 
@@ -77,13 +71,13 @@ Insurance.prototype.calculateQuotation = function (insurance) {
         case '1':
             price = base * 1.15;
             break;
-
+        
         case '2':
-            price = base * 1.05;
+            price =  base * 1.05;
             break;
 
         case '3':
-            price = base * 1.35;
+            price =  base * 1.35;
             break;
     }
 
@@ -105,49 +99,49 @@ Insurance.prototype.calculateQuotation = function (insurance) {
 }
 
 // returns the difference between years
-Insurance.prototype.getYearDifference = function (year) {
+Insurance.prototype.getYearDifference = function(year) {
     return new Date().getFullYear() - year;
 }
 
 // add the value based on the level of protection
-Insurance.prototype.calculateLevel = function (price, level) {
+Insurance.prototype.calculateLevel = function(price, level) {
     /*
         basic insurance is going to increase the value by 30%
         complete insurance is going to increase the value by 50%
     */
-    if (level === 'basic') {
-        price = price * 1.30; //30%
-    } else {
-        price = price * 1.50; // 50%
-    }
-    return price;
+   if(level === 'basic') {
+       price = price * 1.30; //30%
+   } else {
+       price = price * 1.50; // 50%
+   }
+   return price;
 }
 
 // Everything related to the HTML
 function HTMLUI() {}
 
 // Displays the latest 20 years in the select
-HTMLUI.prototype.displayYears = function () {
+HTMLUI.prototype.displayYears = function() {
     // max & minimum years
     const max = new Date().getFullYear(),
-        min = max - 20;
+          min = max - 20;
 
     // generate the list with the latest 20 years
     const selectYears = document.getElementById('year');
 
     // print the values
     // for(let i = min; i <= max; i++) {  1998 to 2018
-    for (let i = max; i >= min; i--) { // print form 2018 to 1998
+    for(let i = max; i >= min; i--) {  // print form 2018 to 1998
         const option = document.createElement('option');
         option.value = i;
         option.textContent = i;
-        selectYears.appendChild(option);
+        selectYears.appendChild(option); 
     }
 
 }
 
 // prints an error
-HTMLUI.prototype.displayError = function (message) {
+HTMLUI.prototype.displayError = function(message) {
     // create a div
     const div = document.createElement('div');
     div.classList = 'error';
@@ -160,53 +154,24 @@ HTMLUI.prototype.displayError = function (message) {
     form.insertBefore(div, document.querySelector('.form-group'));
 
     // remove the error
-    setTimeout(function () {
+    setTimeout(function(){
         document.querySelector('.error').remove();
     }, 3000);
 }
 
 // print the results into the HTML
-HTMLUI.prototype.showResults = function (price, insurance) {
+HTMLUI.prototype.showResults = function(price) {
     // print the result
     const result = document.getElementById('result');
 
     // create a div with the result
     const div = document.createElement('div');
 
-    // make updated do let
-    let make = insurance.make;
-
-    // get make from the object and assign a readable name
-    switch (make) {
-        case '1':
-            make = 'American';
-            break;
-        case '2':
-            make = 'Asian';
-            break;
-        case '3':
-            make = 'European';
-            break;
-
-    }
-
-
     // insert the results
     div.innerHTML = `
-        <p class="header">Summary</p>
-        <p>Make: ${make}</p>
-        <p>Year: ${insurance.year}</p>
-        <p>Level: ${insurance.level}</p>
         <p class="total">Total: ${price}</p>
     `;
 
-    const spinner = document.querySelector('#loading img');
-    spinner.style.display = 'block';
-
-    setTimeout(function(){
-        spinner.style.display = 'none';
-        // insert into the HTML
-        result.appendChild(div);
-    }, 3000);
-
+    // insert into the HTML
+    result.appendChild(div);
 }
